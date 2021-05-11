@@ -33,4 +33,6 @@ Route::prefix('stats')->group(function () {
     Route::get('/daily/{region?}', [RegionsController::class, 'statsDaily']);
     Route::get('/weekly/{region?}', [RegionsController::class, 'statsWeekly']);
     Route::get('/monthly/{region?}', [RegionsController::class, 'statsMonthly']);
+
+    Route::get('/detailed/{date?}', [RegionsController::class, 'detailedStats']);
 });

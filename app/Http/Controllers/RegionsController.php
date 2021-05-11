@@ -449,4 +449,23 @@ class RegionsController extends Controller
             }
         }
     }
+
+    public function detailedStats($date = Null)
+    {
+        if ($date == Null) {
+            $date = Regions::select('date')->orderBy('date', 'desc')->get()->first()['date'];
+        }
+        $data = Regions::where('date', '=', $date)->orderBy('date', 'asc')->get();
+        if (sizeof($data) == 0) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
+
+        return response()->json([
+            "status" => "success",
+            "data" => $data
+        ], 200);
+    }
 }
