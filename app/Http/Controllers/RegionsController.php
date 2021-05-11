@@ -5,63 +5,10 @@ namespace App\Http\Controllers;
 use \App\Models\Regions;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\StatsService;
 
 class RegionsController extends Controller
 {
-    public function getDeathsForDate($date, $region_name)
-    {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
-        $date_obj = Carbon::createFromFormat('Y-m-d', $date);
-        $prev_date = $date_obj->subDays(1);
-        $prev_date = $prev_date->format('Y-m-d');
-
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
-
-        $deaths = $data_for_date['deaths_total'] - $data_for_prev_date['deaths_total'];
-
-        return $deaths;
-    }
-
-    public function getRecoveredForDate($date, $region_name)
-    {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
-        $date_obj = Carbon::createFromFormat('Y-m-d', $date);
-        $prev_date = $date_obj->subDays(1);
-        $prev_date = $prev_date->format('Y-m-d');
-
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')
-            ->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
-
-
-        $recovered = $data_for_date['recovered_total'] - $data_for_prev_date['recovered_total'];
-
-        return $recovered;
-    }
-    public function getPostiveForDate($date, $region_name)
-    {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
-        $date_obj = Carbon::createFromFormat('Y-m-d', $date);
-        $prev_date = $date_obj->subDays(1);
-        $prev_date = $prev_date->format('Y-m-d');
-
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
-
-        $postive = $data_for_date['postive_total'] - $data_for_prev_date['postive_total'];
-
-        return $postive;
-    }
-
-    public function updateDataInColumn($id, $value, $field)
-    {
-        $data = Regions::findOrFail($id);
-        $data->$field = $value;
-        $data->save();
-        return True;
-    }
-
     public function statsAll($region = Null)
     {
         $region = $region ?? 'jk';
@@ -97,9 +44,9 @@ class RegionsController extends Controller
             ->first();
 
         if ($data != Null && $data['deaths_new'] == Null) {
-            $deaths = $this->getDeathsForDate($data['date'], 'jk');
+            $deaths = StatsService::getDeathsForDate($data['date'], $region);
             $data['deaths_new'] = $deaths;
-            $this->updateDataInColumn($data['id'], $deaths, 'deaths_new');
+            StatsService::updateDataInColumn($data['id'], $deaths, 'deaths_new');
         }
         if (!$data) {
             return response()->json([
@@ -118,28 +65,7 @@ class RegionsController extends Controller
     {
         $region = $region ?? 'jk';
         $yesterday = Carbon::now()->format('Y-m-d');
-        return $this->statsForDate($yesterday, $region = Null);
-    }
-
-    public function statsForDate($date, $region = Null)
-    {
-        $region = $region ?? 'jk';
-        $data = Regions::where('name', '=', $region)->where('date', '=', $date)->orderByDesc('date')->get()->first();
-        if ($data != Null && $data['deaths_new'] == Null) {
-            $deaths = $this->getDeathsForDate($data['date'], 'jk');
-            $data['deaths_new'] = $deaths;
-            $this->updateDataInColumn($data['id'], $deaths, 'deaths_new');
-        }
-        if ($data != Null && $data['recovered_new'] == Null) {
-            $recovered = $this->getRecoveredForDate($data['date'], 'jk');
-            $data['recovered_new'] = $recovered;
-            $this->updateDataInColumn($data['id'], $recovered, 'recovered_new');
-        }
-        if ($data != Null && $data['postive_new'] == Null) {
-            $postive = $this->getPostiveForDate($data['date'], 'jk');
-            $data['postive_new'] = $postive;
-            $this->updateDataInColumn($data['id'], $postive, 'postive_new');
-        }
+        $data =  StatsService::statsForDate($yesterday, $region = Null);
         if (!$data) {
             return response()->json([
                 "status" => 'failure',
@@ -153,6 +79,27 @@ class RegionsController extends Controller
         ], 200);
     }
 
+    public function statsForDate($date, $region = Null)
+    {
+        $region = $region ?? 'jk';
+        $data = StatsService::statsForDate($date, $region);
+
+        if (!$data) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
+        return response()->json([
+            "status" => "success",
+            "region" => $region,
+            "data" => $data
+        ], 200);
+    }
+
+
+
+
     public function statsCurrWeek($region = Null)
     {
         $region = $region ?? 'jk';
@@ -161,6 +108,13 @@ class RegionsController extends Controller
         $week_end_date = $now->endOfWeek()->format('Y-m-d');
 
         $data_curr_week = Regions::where('name', '=', $region)->whereBetween('date', [$week_start_date, $week_end_date])->orderByDesc('date')->get();
+
+        if (sizeof($data_curr_week) == 0) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
         $data_week_end = $data_curr_week[0];
         $data_week_start = $data_curr_week[sizeof($data_curr_week) - 1];
 
@@ -190,8 +144,13 @@ class RegionsController extends Controller
         $prev_week_start_date = $now->subDays($now->dayOfWeek)->subWeek()->format('Y-m-d');
         $prev_week_end_date = $now->subDays($now->dayOfWeek)->addWeek()->format('Y-m-d');
 
-
         $data_prev_week = Regions::where('name', '=', $region)->whereBetween('date', [$prev_week_start_date, $prev_week_end_date])->orderByDesc('date')->get();
+        if (sizeof($data_prev_week) == 0) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
         $data_week_end = $data_prev_week[0];
         $data_week_start = $data_prev_week[sizeof($data_prev_week) - 1];
 
@@ -222,6 +181,12 @@ class RegionsController extends Controller
         $curr_date = Carbon::now()->format('Y-m-d');
 
         $data_curr_month = Regions::where('name', '=', $region)->whereBetween('date', [$month_start_date, $curr_date])->orderByDesc('date')->get();
+        if (sizeof($data_curr_month) == 0) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
         $data_month_end = $data_curr_month[0];
         $data_month_start = $data_curr_month[sizeof($data_curr_month) - 1];
 
@@ -255,6 +220,12 @@ class RegionsController extends Controller
         $end = $end->format('Y-m-d');
 
         $data_prev_month = Regions::where('name', '=', $region)->whereBetween('date', [$start, $end])->orderByDesc('date')->get();
+        if (sizeof($data_prev_month) == 0) {
+            return response()->json([
+                "status" => 'failure',
+                "message" => "Data Not Found"
+            ], 404);
+        }
         $data_month_end = $data_prev_month[0];
         $data_month_start = $data_prev_month[sizeof($data_prev_month) - 1];
 
