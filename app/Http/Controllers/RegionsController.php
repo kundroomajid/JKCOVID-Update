@@ -370,7 +370,7 @@ class RegionsController extends Controller
         )
             ->groupBy('month')
             ->where('name', '=', $region)
-            ->orderBy('month', 'asc')
+            ->orderBy('date', 'asc')
             ->get();
         if (sizeof($data) == 0) {
             return response()->json([
