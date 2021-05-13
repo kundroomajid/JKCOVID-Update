@@ -65,7 +65,14 @@ class StatsService
     public static function statsForDate($date, $region = Null)
     {
         $region = $region ?? 'jk';
-        $data = Regions::where('name', '=', $region)->where('date', '=', $date)->orderByDesc('date')->get()->first();
+        $data = Regions::select([
+            'id', 'date', 'name', 'postive_new', 'recovered_new',
+            'deaths_new', 'created_at as last_updated'
+        ])
+            ->where('name', '=', $region)
+            ->where('date', '=', $date)
+            ->orderByDesc('date')
+            ->first();
         if ($data != Null && $data['deaths_new'] == Null) {
             $deaths = self::getDeathsForDate($data['date'], 'jk');
             $data['deaths_new'] = $deaths;

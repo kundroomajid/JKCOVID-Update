@@ -14,7 +14,7 @@ class RegionsController extends Controller
         $region = $region ?? 'jk';
         $data = Regions::select([
             'id', 'date', 'name', 'postive_total', 'recovered_total',
-            'deaths_total', 'created_at'
+            'deaths_total', 'created_at as last_updated'
         ])
             ->where('name', '=', $region)
             ->orderByDesc('date')
@@ -24,7 +24,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -36,8 +36,8 @@ class RegionsController extends Controller
     {
         $region = $region ?? 'jk';
         $data = Regions::select([
-            'id', 'date', 'name', 'postive_new', 'recovered_new',
-            'deaths_new', 'created_at'
+             'date', 'name', 'postive_new', 'recovered_new',
+            'deaths_new', 'created_at as last_updated'
         ])
             ->where('name', '=', $region)
             ->orderByDesc('date')
@@ -52,7 +52,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -70,7 +70,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -88,7 +88,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -113,7 +113,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         $data_week_end = $data_curr_week[0];
         $data_week_start = $data_curr_week[sizeof($data_curr_week) - 1];
@@ -128,7 +128,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -149,7 +149,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         $data_week_end = $data_prev_week[0];
         $data_week_start = $data_prev_week[sizeof($data_prev_week) - 1];
@@ -164,7 +164,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -185,7 +185,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         $data_month_end = $data_curr_month[0];
         $data_month_start = $data_curr_month[sizeof($data_curr_month) - 1];
@@ -200,7 +200,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -224,7 +224,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         $data_month_end = $data_prev_month[0];
         $data_month_start = $data_prev_month[sizeof($data_prev_month) - 1];
@@ -239,7 +239,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -259,7 +259,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         $data_month_end = $data[0];
         $data_month_start = $data[sizeof($data) - 1];
@@ -274,7 +274,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -296,7 +296,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
 
         $data = Regions::where('name', '=', $region)->orderBy('date', 'asc')->get();
@@ -322,7 +322,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
 
         $data = Regions::select(
@@ -339,7 +339,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -359,7 +359,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
 
         $data = Regions::select(
@@ -376,7 +376,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
         return response()->json([
             "status" => "success",
@@ -431,7 +431,7 @@ class RegionsController extends Controller
             return response()->json([
                 "status" => 'failure',
                 "message" => "Data Not Found"
-            ], 404);
+            ], 400);
         }
 
         return response()->json([
