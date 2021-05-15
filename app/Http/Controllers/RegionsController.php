@@ -14,7 +14,7 @@ class RegionsController extends Controller
         $region = $region ?? 'jk';
         $data = Regions::select([
             'id', 'date', 'name', 'postive_total', 'recovered_total',
-            'deaths_total', 'created_at as last_updated'
+            'deaths_total', 'total_active', 'created_at as last_updated'
         ])
             ->where('name', '=', $region)
             ->orderByDesc('date')
@@ -36,7 +36,7 @@ class RegionsController extends Controller
     {
         $region = $region ?? 'jk';
         $data = Regions::select([
-             'date', 'name', 'postive_new', 'recovered_new',
+            'date', 'name', 'postive_new', 'recovered_new',
             'deaths_new', 'created_at as last_updated'
         ])
             ->where('name', '=', $region)
@@ -387,22 +387,27 @@ class RegionsController extends Controller
 
     public function updateMissingValues()
     {
+        ini_set('max_execution_time', 300);
         $d = Regions::orderBy('date', 'desc')->get();
         foreach ($d as $data) {
+            $deaths = 0;
+            $recovered = 0;
+            $postive = 0;
             if ($data != Null && $data['deaths_new'] == Null) {
                 try {
-                    $deaths = $this->getDeathsForDate($data['date'], $data['name']);
-                    $this->updateDataInColumn($data['id'], $deaths, 'deaths_new');
+                    $deaths = StatsService::getDeathsForDate($data['date'], $data['name']);
+                    StatsService::updateDataInColumn($data['id'], $deaths, 'deaths_new');
                 } catch (\Throwable $th) {
                     print("<br>");
-                    print('error in deaths : ' . $data['id']);
+                    print("Deaths :" . $deaths);
+                    print('   error in deaths : ' . $data['id']);
                 }
             }
             if ($data != Null && $data['recovered_new'] == Null) {
                 try {
-                    $recovered = $this->getRecoveredForDate($data['date'], $data['name']);
+                    $recovered = StatsService::getRecoveredForDate($data['date'], $data['name']);
                     $data['recovered_new'] = $recovered;
-                    $this->updateDataInColumn($data['id'], $recovered, 'recovered_new');
+                    StatsService::updateDataInColumn($data['id'], $recovered, 'recovered_new');
                 } catch (\Throwable $th) {
                     print("<br>");
                     print('error in recovery : ' . $data['id']);
@@ -410,12 +415,12 @@ class RegionsController extends Controller
             }
             if ($data != Null && $data['postive_new'] == Null) {
                 try {
-                    $postive = $this->getPostiveForDate($data['date'], $data['name']);
+                    $postive = StatsService::getPostiveForDate($data['date'], $data['name']);
                     $data['postive_new'] = $postive;
-                    $this->updateDataInColumn($data['id'], $postive, 'postive_new');
+                    StatsService::updateDataInColumn($data['id'], $postive, 'postive_new');
                 } catch (\Throwable $th) {
                     print("<br>");
-                    print('error in deaths : ' . $data['id']);
+                    print('error in postive : ' . $data['id']);
                 }
             }
         }

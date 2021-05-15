@@ -4,52 +4,106 @@ namespace App\Services;
 
 use App\Models\Regions;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
 class StatsService
 {
     public static function getDeathsForDate($date, $region_name)
     {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        $deaths = 0;
+        try {
+            $data_for_date =  Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
+
         $date_obj = Carbon::createFromFormat('Y-m-d', $date);
         $prev_date = $date_obj->subDays(1);
         $prev_date = $prev_date->format('Y-m-d');
 
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
+        try {
+            $data_for_prev_date = Regions::select('id', 'name', 'date', 'deaths_new', 'deaths_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
 
-        $deaths = $data_for_date['deaths_total'] - $data_for_prev_date['deaths_total'];
+        try {
+            if ($data_for_prev_date != Null && $data_for_date != Null) {
+                $deaths = $data_for_date['deaths_total'] - $data_for_prev_date['deaths_total'];
+                return $deaths;
+            }
+            return 0;
+        } catch (Exception $e) {
+            $deaths = 0;
+            echo ($e->getMessage());
+        }
 
         return $deaths;
     }
 
     public static function getRecoveredForDate($date, $region_name)
     {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        $recovered = 0;
+        try {
+            $data_for_date =  Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
+
         $date_obj = Carbon::createFromFormat('Y-m-d', $date);
         $prev_date = $date_obj->subDays(1);
         $prev_date = $prev_date->format('Y-m-d');
 
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')
-            ->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
+        try {
+            $data_for_prev_date = Regions::select('id', 'name', 'date', 'recovered_new', 'recovered_total')
+                ->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
 
-
-        $recovered = $data_for_date['recovered_total'] - $data_for_prev_date['recovered_total'];
+        try {
+            if ($data_for_prev_date != Null && $data_for_date != Null) {
+                $recovered = $data_for_date['recovered_total'] - $data_for_prev_date['recovered_total'];
+                return $recovered;
+            }
+            return 0;
+        } catch (Exception $e) {
+            $deaths = 0;
+            echo ($e->getMessage());
+        }
 
         return $recovered;
     }
     public static function getPostiveForDate($date, $region_name)
     {
-        $data_for_date =  Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        $postive = 0;
+        try {
+            $data_for_date =  Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
+
         $date_obj = Carbon::createFromFormat('Y-m-d', $date);
         $prev_date = $date_obj->subDays(1);
         $prev_date = $prev_date->format('Y-m-d');
 
-        $data_for_prev_date = Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
-        // calculate deaths from data of prev_date and curr_date
-
-        $postive = $data_for_date['postive_total'] - $data_for_prev_date['postive_total'];
+        try {
+            $data_for_prev_date = Regions::select('id', 'name', 'date', 'postive_new', 'postive_total')->where('name', '=', $region_name)->where('date', '=', $prev_date)->get()->first();
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+        }
+        try {
+            if ($data_for_prev_date != Null && $data_for_date != Null) {
+                $postive = $data_for_date['postive_total'] - $data_for_prev_date['postive_total'];
+                return $postive;
+            }
+            return 0;
+        } catch (Exception $e) {
+            $deaths = 0;
+            echo ($e->getMessage());
+        }
 
         return $postive;
     }

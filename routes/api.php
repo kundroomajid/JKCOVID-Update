@@ -31,4 +31,6 @@ Route::prefix('stats')->group(function () {
     Route::get('/monthly/{region?}', [RegionsController::class, 'statsMonthly']);
 
     Route::get('/detailed/{date?}', [RegionsController::class, 'detailedStats']);
+
+    Route::get('/updatemissing', [RegionsController::class, 'updateMissingValues']);
 });
