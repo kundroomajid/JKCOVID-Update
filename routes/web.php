@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'getHomePage']);
+Route::get('stats/allregions', [HomeController::class, 'getDataForAllRegions'])->name('stats.allregions');

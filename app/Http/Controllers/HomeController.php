@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Models\Regions;
 use Carbon\Carbon;
+use DataTables;
 
 class HomeController extends Controller
 {
@@ -33,5 +34,23 @@ class HomeController extends Controller
         $all_stats_jammu = $this->getAllStats('jammu_div');
 
         return view('home', compact('all_stats_jk', 'all_stats_kashmir', 'all_stats_jammu'));
+    }
+
+    public function getDataForAllRegions(Request $request)
+    {
+
+        if ($request->ajax()) {
+            // $data = Regions::all();
+            $data = Regions::select([
+                'id', 'date', 'name', 'postive_total', 'recovered_total',
+                'deaths_total', 'total_active', 'postive_new', 'recovered_new',
+                'deaths_new', 'created_at'
+            ])
+                ->orderByDesc('date')
+                ->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->make(true);
+        }
     }
 }

@@ -16,20 +16,6 @@
     fetchData('monthly');
   });
 
-// function getLatestStats(region){
-//     console.log('inside get latest stats');
-//     res = fetch('http://localhost:8000/api/stats/all')
-//     .then(response => response.json())
-//     .then(data => updateStatsCards(data));
-//     }
-// function updateStatsCards(data)
-// {
-//     data = data.data;
-//     console.log(data.last_updated);
-//     last_updated = new Date(data.last_updated);
-//     console.log(last_updated);
-// }
-
 function fetchData(period)
 {   
     $("#spinner").show();

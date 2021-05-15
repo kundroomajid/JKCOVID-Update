@@ -303,132 +303,25 @@
             </div>
             <!-- stats for divisions end  -->
             <!-- detailed table starts -->
-            <div class="col-12">
-                <h2>Region Wise Data</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
+            <div class="col-12 mt-4">
+                <h4 class="mb-3">Region Wise Data</h4>
+                <div class="">
+                    <table class="table table-bordered data-table">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Header</th>
-                                <th>Header</th>
-                                <th>Header</th>
-                                <th>Header</th>
+                                <th width="12%">Date</th>
+                                <th width="13%">Region</th>
+                                <th>Postive New</th>
+                                <th>Postive Total</th>
+                                <th>Recovered New</th>
+                                <th>Recovered Total</th>
+                                <th>Total Active</th>
+                                <th>Deaths New</th>
+                                <th>Deaths Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1,001</td>
-                                <td>random</td>
-                                <td>data</td>
-                                <td>placeholder</td>
-                                <td>text</td>
-                            </tr>
-                            <tr>
-                                <td>1,002</td>
-                                <td>placeholder</td>
-                                <td>irrelevant</td>
-                                <td>visual</td>
-                                <td>layout</td>
-                            </tr>
-                            <tr>
-                                <td>1,003</td>
-                                <td>data</td>
-                                <td>rich</td>
-                                <td>dashboard</td>
-                                <td>tabular</td>
-                            </tr>
-                            <tr>
-                                <td>1,003</td>
-                                <td>information</td>
-                                <td>placeholder</td>
-                                <td>illustrative</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,004</td>
-                                <td>text</td>
-                                <td>random</td>
-                                <td>layout</td>
-                                <td>dashboard</td>
-                            </tr>
-                            <tr>
-                                <td>1,005</td>
-                                <td>dashboard</td>
-                                <td>irrelevant</td>
-                                <td>text</td>
-                                <td>placeholder</td>
-                            </tr>
-                            <tr>
-                                <td>1,006</td>
-                                <td>dashboard</td>
-                                <td>illustrative</td>
-                                <td>rich</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,007</td>
-                                <td>placeholder</td>
-                                <td>tabular</td>
-                                <td>information</td>
-                                <td>irrelevant</td>
-                            </tr>
-                            <tr>
-                                <td>1,008</td>
-                                <td>random</td>
-                                <td>data</td>
-                                <td>placeholder</td>
-                                <td>text</td>
-                            </tr>
-                            <tr>
-                                <td>1,009</td>
-                                <td>placeholder</td>
-                                <td>irrelevant</td>
-                                <td>visual</td>
-                                <td>layout</td>
-                            </tr>
-                            <tr>
-                                <td>1,010</td>
-                                <td>data</td>
-                                <td>rich</td>
-                                <td>dashboard</td>
-                                <td>tabular</td>
-                            </tr>
-                            <tr>
-                                <td>1,011</td>
-                                <td>information</td>
-                                <td>placeholder</td>
-                                <td>illustrative</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,012</td>
-                                <td>text</td>
-                                <td>placeholder</td>
-                                <td>layout</td>
-                                <td>dashboard</td>
-                            </tr>
-                            <tr>
-                                <td>1,013</td>
-                                <td>dashboard</td>
-                                <td>irrelevant</td>
-                                <td>text</td>
-                                <td>visual</td>
-                            </tr>
-                            <tr>
-                                <td>1,014</td>
-                                <td>dashboard</td>
-                                <td>illustrative</td>
-                                <td>rich</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,015</td>
-                                <td>random</td>
-                                <td>tabular</td>
-                                <td>information</td>
-                                <td>text</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -442,7 +335,82 @@
     </div>
 @endsection
 @section('scripts')
+    <script type="text/javascript">
+        $(function() {
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: false,
+                lengthMenu: [23, 46, 69],
+                ajax: "{{ route('stats.allregions') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'date',
+                        name: 'date',
+                        render: function(data) {
+                            date = new Date(data);
+                            return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+                        }
+                    },
 
+                    {
+                        data: 'name',
+                        name: 'name',
+                        render: function(data) {
+                            name = data.toUpperCase();
+                            res = name.split("_");
+                            if (res.length == 2) {
+                                return res[0] + " " + res[1];
+                            } else {
+                                return name;
+                            }
+
+                        }
+                    },
+                    {
+                        data: 'postive_new',
+                        name: 'postive_new',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'postive_total',
+                        name: 'postive_total',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'recovered_new',
+                        name: 'recovered_new',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'recovered_total',
+                        name: 'recovered_total',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'total_active',
+                        name: 'total_active',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'deaths_new',
+                        name: 'deaths_new',
+                        render: $.fn.dataTable.render.number(',')
+                    },
+                    {
+                        data: 'deaths_total',
+                        name: 'deaths_total',
+                        render: $.fn.dataTable.render.number(',')
+                    }
+                ]
+            });
+
+        });
+
+    </script>
     @parent
 
 @endsection
