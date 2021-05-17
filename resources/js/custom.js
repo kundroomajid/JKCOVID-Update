@@ -3,7 +3,7 @@
   
   
   $(function() {
-    fetchData('daily');
+    fetchData('monthly');
   });
   
   $("#button-daily").click(function() {
@@ -98,12 +98,13 @@ function showDailyChart(data)
     ]
   },
   options: {
+    responsive: true,
     plugins: {
         title: {
             display: true,
             text: 'Daily Covid Cases of JK',
             font: {
-                size: 18
+                size: 12
             }
         },
         
@@ -156,7 +157,7 @@ function showWeeklyChart(data)
             display: true,
             text: 'Weekly Covid Cases of JK',
             font: {
-                size: 18
+                size: 12
             }
         },
         
@@ -209,7 +210,7 @@ function showMonthlyChart(data)
             display: true,
             text: 'Monthly Covid Cases of JK',
             font: {
-                size: 18
+                size: 12
             }
         },
         
