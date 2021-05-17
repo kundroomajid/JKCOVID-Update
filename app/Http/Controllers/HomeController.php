@@ -21,10 +21,14 @@ class HomeController extends Controller
             ->orderByDesc('date')
             ->first();
 
-        $last_updated = $all_stats['last_updated'];
-        $last_updated = Carbon::createFromTimeString($last_updated, $tz = 'Asia/Calcutta')->format('l jS \of F Y h:i:s A') ?? "NA";
-        $all_stats['last_updated'] = $last_updated;
-        return $all_stats;
+        if ($all_stats) {
+            $last_updated = $all_stats['last_updated'];
+            $last_updated = Carbon::createFromTimeString($last_updated, $tz = 'Asia/Calcutta')->format('l jS \of F Y h:i:s A') ?? "NA";
+            $all_stats['last_updated'] = $last_updated;
+            return $all_stats;
+        } else {
+            return null;
+        }
     }
     public function getHomePage()
     {
