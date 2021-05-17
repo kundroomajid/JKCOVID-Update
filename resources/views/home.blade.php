@@ -362,7 +362,7 @@
                 serverSide: true,
                 scrollX: false,
                 lengthMenu: [23, 46, 69],
-                ajax: "{{ route('stats.allregions') }}",
+                ajax: "/stats/allregions",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
