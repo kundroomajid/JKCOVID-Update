@@ -1885,7 +1885,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 var myChart;
 $(function () {
-  fetchData('daily');
+  fetchData('monthly');
 });
 $("#button-daily").click(function () {
   fetchData('daily');
@@ -1912,7 +1912,7 @@ function fetchData(period) {
     monthly_button.classList.add("active");
     daily_button.classList.remove("active");
     weekly_button.classList.remove("active");
-    res = fetch('http://localhost:8000/api/stats/monthly/jk').then(function (response) {
+    res = fetch('/api/stats/monthly/jk').then(function (response) {
       return response.json();
     }).then(function (data) {
       return showMonthlyChart(data);
@@ -1921,7 +1921,7 @@ function fetchData(period) {
     weekly_button.classList.add("active");
     monthly_button.classList.remove("active");
     daily_button.classList.remove("active");
-    res = fetch('http://localhost:8000/api/stats/weekly/jk').then(function (response) {
+    res = fetch('/api/stats/weekly/jk').then(function (response) {
       return response.json();
     }).then(function (data) {
       return showWeeklyChart(data);
@@ -1930,7 +1930,7 @@ function fetchData(period) {
     daily_button.classList.add("active");
     weekly_button.classList.remove("active");
     monthly_button.classList.remove("active");
-    res = fetch('http://localhost:8000/api/stats/daily/jk').then(function (response) {
+    res = fetch('/api/stats/daily/jk').then(function (response) {
       return response.json();
     }).then(function (data) {
       return showDailyChart(data);

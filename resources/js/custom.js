@@ -33,7 +33,7 @@ function fetchData(period)
     monthly_button.classList.add("active");
     daily_button.classList.remove("active");
     weekly_button.classList.remove("active");
-    res = fetch('http://localhost:8000/api/stats/monthly/jk')
+    res = fetch('/api/stats/monthly/jk')
   .then(response => response.json())
   .then(data => showMonthlyChart(data));
   }
@@ -43,7 +43,7 @@ function fetchData(period)
     monthly_button.classList.remove("active");
     daily_button.classList.remove("active");
 
-    res = fetch('http://localhost:8000/api/stats/weekly/jk')
+    res = fetch('/api/stats/weekly/jk')
   .then(response => response.json())
   .then(data => showWeeklyChart(data));
   }
@@ -52,7 +52,7 @@ function fetchData(period)
     daily_button.classList.add("active");
     weekly_button.classList.remove("active");
     monthly_button.classList.remove("active");
-    res = fetch('http://localhost:8000/api/stats/daily/jk')
+    res = fetch('/api/stats/daily/jk')
   .then(response => response.json())
   .then(data => showDailyChart(data));
   }

@@ -355,6 +355,7 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
+        var BASE_API_URL = "{{ env('APP_URL') }}";
         $(function() {
             var table = $('.data-table').DataTable({
                 processing: false,
@@ -452,7 +453,7 @@
         };
         var mymap = L.map('mapid').setView([33.2778, 75.3412], 8);
 
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             maxZoom: 18,
             id: 'mapbox/streets-v11',
@@ -484,8 +485,7 @@
 
             preprocessDataAndshowMap.changeMapData = changeMapData;
         }
-
-        res = fetch('http://localhost:8000/api/stats/detailed')
+        res = fetch('api/stats/detailed')
             .then(response => response.json())
             .then(data => preprocessDataAndshowMap(data));
 
@@ -548,7 +548,7 @@
                 }
 
             }; --}}
-            let res = await fetch('http://localhost:8000/api/regioncoords')
+            let res = await fetch('/api/regioncoords')
 
             let out = await res.json();
             return out['data'];
