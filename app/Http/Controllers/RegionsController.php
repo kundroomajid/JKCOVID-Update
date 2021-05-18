@@ -325,16 +325,23 @@ class RegionsController extends Controller
             ], 400);
         }
 
-        $data = Regions::select(
-            DB::raw("(SUM(postive_new)) as postive"),
-            DB::raw("(SUM(recovered_new)) as recovered"),
-            DB::raw("(SUM(deaths_new)) as deaths"),
-            DB::raw("CONCAT(STR_TO_DATE(CONCAT(YEARWEEK(date,1),' Sunday'), '%X%V %W'),':',DATE_ADD(date, INTERVAL 7 DAY))as week")
-        )
-            ->groupBy('week')
-            ->where('name', '=', $region)
-            ->orderBy('date', 'asc')
-            ->get();
+        $data = Regions::select('*')->where('name', '=', $region)->orderBy('date', 'asc')->get()->groupBy(function ($item) {
+            $date = Carbon::parse($item->date);
+            $start_week = $date->copy()->startOfWeek();
+            $end_week = $date->copy()->endOfWeek();
+            $or =  $start_week->format('Y-m-d') . ':' . $end_week->format('Y-m-d');
+            return $or;
+        });
+        $ret_data = [];
+
+        foreach ($data as $week => $val) {
+            $postive = $val->sum('postive_new');
+            $recovered = $val->sum('recovered_new');
+            $deaths = $val->sum('deaths_new');
+            $arr = ["week" => $week, "postive" => $postive, "recovered" => $recovered, "deaths" => $deaths];
+            array_push($ret_data, $arr);
+        }
+
         if (sizeof($data) == 0) {
             return response()->json([
                 "status" => 'failure',
@@ -344,7 +351,7 @@ class RegionsController extends Controller
         return response()->json([
             "status" => "success",
             "region" => $region,
-            "data" => $data
+            "data" => $ret_data
         ], 200);
     }
 
@@ -361,17 +368,18 @@ class RegionsController extends Controller
                 "message" => "Data Not Found"
             ], 400);
         }
-
-        $data = Regions::select(
-            DB::raw("(SUM(postive_new)) as postive"),
-            DB::raw("(SUM(recovered_new)) as recovered"),
-            DB::raw("(SUM(deaths_new)) as deaths"),
-            DB::raw("CONCAT(MONTHNAME(date),'-',YEAR(date)) as month")
-        )
-            ->groupBy('month')
-            ->where('name', '=', $region)
-            ->orderBy('date', 'asc')
-            ->get();
+        $data = Regions::select('*')->where('name', '=', $region)->orderBy('date', 'asc')->get()->groupBy(function ($item) {
+            $or = Carbon::parse($item->date)->format('F') . '-' . Carbon::parse($item->date)->format('Y');
+            return $or;
+        });
+        $ret_data = [];
+        foreach ($data as $month => $val) {
+            $postive = $val->sum('postive_new');
+            $recovered = $val->sum('recovered_new');
+            $deaths = $val->sum('deaths_new');
+            $arr = ["month" => $month, "postive" => $postive, "recovered" => $recovered, "deaths" => $deaths];
+            array_push($ret_data, $arr);
+        }
         if (sizeof($data) == 0) {
             return response()->json([
                 "status" => 'failure',
@@ -381,7 +389,7 @@ class RegionsController extends Controller
         return response()->json([
             "status" => "success",
             "region" => $region,
-            "data" => $data
+            "data" => $ret_data
         ], 200);
     }
 
