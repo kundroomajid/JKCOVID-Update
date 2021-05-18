@@ -4,7 +4,7 @@
         <div class="container">
             <!-- cards row start -->
             <div class="col-md-12 ">
-                <div class="m-2">
+                <div class="mb-3 mt3">
                     <span class="badge bg-info text-dark"> Last Updated On: <i id="last_updated">
                             {{ $all_stats_jk['last_updated'] }} </i>
                     </span>
@@ -97,41 +97,35 @@
                 </div>
             </div>
             <!-- cards row end -->
-
             <!-- chart starts here -->
-            <section id="chart-body">
-                <div class="col-12">
-                    <div class="card text-center">
-                        <div class="card-header mb-1">
-                            <ul class="nav nav-pills card-header-pills">
-                                <li class="nav-item">
-                                    <input type="button" class="nav-link active" id="button-daily" value="Daily" />
-                                </li>
-                                <li class="nav-item">
-                                    <input type="button" class="nav-link" id="button-weekly" value="Weekly" />
-                                </li>
-                                <li class="nav-item">
-                                    <input type="button" class="nav-link" id="button-monthly" value="Monthly" />
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="card-body chart" style="margin-top:-35px;">
-                            <canvas class="my-4 w-100 chartjs-render-monitor" id="line-chart" width=auto height=auto
-                                style="display: block; height: 37vh; width: auto;">
-                            </canvas>
-                            <div id="spinner" class="loader" style="display:none"></div>
-                        </div>
+            <section>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-5">
+                        <input type="button" class="btn btn-sm btn-outline-secondary active" id="button-daily"
+                            value="Daily" />
+                        <input type="button" class="btn btn-sm btn-outline-secondary active" id="button-weekly"
+                            value="Weekly" />
+                        <input type="button" class="btn btn-sm btn-outline-secondary active" id="button-monthly"
+                            value="Monthly" />
                     </div>
                 </div>
+                <div class="mb-3" style="width:100%;height:80vh;align-content: center;">
+                    <canvas id="line-chart"></canvas>
+                    <center>
+                        <p id="spinner" class="loader" style="display:none"> </p>
+                    </center>
+
+                </div>
             </section>
+
             <!-- chart ends here -->
 
             <!-- stats for divisions start  -->
-            <div class="col-12">
+            <div class=" col-12">
                 <div class="row">
                     <div class="card-group">
-                        <div class="card text-white l-bg-cyan m-1">
-                            <div class="card-header">Stats Kashmir Division (Updated :
+                        <div class="card text-white l-bg-cyan m-1 mt-3">
+                            <div class="card-header">Stats Kashmir Div(Updated :
                                 {{ $all_stats_kashmir['last_updated'] }})</div>
                             <div class="card-body">
                                 <div class="col-12">
@@ -213,8 +207,8 @@
                             </div>
                         </div>
 
-                        <div class="card text-white l-bg-green-dark m-1">
-                            <div class="card-header">Stats Jammu Division (Updated :
+                        <div class="card text-white l-bg-green-dark m-1 mt-3">
+                            <div class="card-header">Stats Jammu Div (Updated :
                                 {{ $all_stats_jammu['last_updated'] }})</div>
                             <div class="card-body">
                                 <div class="col-12">
@@ -302,9 +296,8 @@
             <!-- stats for divisions end  -->
 
             <section>
-                <div class="col-12">
+                <div class="col-12 mt-3">
                     <div class="card text-center">
-
                         <div class="card-header">
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <h6 class="ml-5 mr-5 mt-2"> Change View </h6>
@@ -327,8 +320,8 @@
             <!-- detailed table starts -->
             <div class="col-12 mt-4">
                 <h4 class="mb-3">Region Wise Data</h4>
-                <div class="">
-                    <table class="table table-bordered data-table">
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -360,7 +353,7 @@
             var table = $('.data-table').DataTable({
                 processing: false,
                 serverSide: true,
-                scrollX: false,
+                scrollX: true,
                 lengthMenu: [23, 46, 69],
                 ajax: "/stats/allregions",
                 columns: [{
@@ -372,7 +365,7 @@
                         name: 'date',
                         render: function(data) {
                             date = new Date(data);
-                            return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+                            return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
                         }
                     },
 

@@ -1897,6 +1897,32 @@ $("#button-monthly").click(function () {
   fetchData('monthly');
 });
 
+function reFormatDate(date) {
+  if (date.length == 10) {
+    date = new Date(date);
+    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+    var year = ("0" + date.getFullYear()).slice(-2);
+    return "".concat(day, "/").concat(month, "/").concat(year);
+  }
+
+  if (date.length > 20) {
+    date1 = date.split(":")[0];
+    date2 = date.split(":")[1];
+    date1 = new Date(date1);
+    date2 = new Date(date2);
+    var month1 = ("0" + (date1.getMonth() + 1)).slice(-2);
+    var day1 = ("0" + date1.getDate()).slice(-2);
+    var year1 = ("0" + date1.getFullYear()).slice(-2);
+    var month2 = ("0" + (date2.getMonth() + 1)).slice(-2);
+    var day2 = ("0" + date2.getDate()).slice(-2);
+    var year2 = ("0" + date2.getFullYear()).slice(-2);
+    return "".concat(day1, "/").concat(month1, "/").concat(year1, ":").concat(day2, "/").concat(month2, "/").concat(year2);
+  }
+
+  return date;
+}
+
 function fetchData(period) {
   $("#spinner").show();
 
@@ -1945,7 +1971,8 @@ function showDailyChart(data) {
   postives = [];
   dates = [];
   data['data'].forEach(function (element) {
-    dates.push(element['date']);
+    date = reFormatDate(element['date']);
+    dates.push(date);
     postives.push(element['postive']);
     recovered.push(element['recovered']);
     deaths.push(element['deaths']);
@@ -1973,6 +2000,10 @@ function showDailyChart(data) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index'
+      },
       plugins: {
         title: {
           display: true,
@@ -1980,6 +2011,14 @@ function showDailyChart(data) {
           font: {
             size: 12
           }
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
         }
       }
     }
@@ -1993,7 +2032,9 @@ function showWeeklyChart(data) {
   postives = [];
   dates = [];
   data['data'].forEach(function (element) {
-    dates.push(element['week']);
+    week = element['week'];
+    week = reFormatDate(week);
+    dates.push(week);
     postives.push(element['postive']);
     recovered.push(element['recovered']);
     deaths.push(element['deaths']);
@@ -2020,6 +2061,11 @@ function showWeeklyChart(data) {
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index'
+      },
       plugins: {
         title: {
           display: true,
@@ -2027,6 +2073,14 @@ function showWeeklyChart(data) {
           font: {
             size: 12
           }
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
         }
       }
     }
@@ -2067,6 +2121,11 @@ function showMonthlyChart(data) {
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index'
+      },
       plugins: {
         title: {
           display: true,
@@ -2074,6 +2133,14 @@ function showMonthlyChart(data) {
           font: {
             size: 12
           }
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
         }
       }
     }

@@ -88,9 +88,6 @@
 }
 
 .loader {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     z-index: 1;
     width: 120px;
     height: 120px;
@@ -130,3 +127,5 @@
     from{ bottom:-100px; opacity:0 } 
     to{ bottom:0; opacity:1 }
   }
+
+

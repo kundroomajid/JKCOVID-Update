@@ -44,7 +44,6 @@ class HomeController extends Controller
     {
 
         if ($request->ajax()) {
-            // $data = Regions::all();
             $data = Regions::select([
                 'id', 'date', 'name', 'postive_total', 'recovered_total',
                 'deaths_total', 'total_active', 'postive_new', 'recovered_new',
@@ -52,6 +51,7 @@ class HomeController extends Controller
             ])
                 ->orderByDesc('date')
                 ->get();
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->make(true);
