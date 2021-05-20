@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRegionsTable extends Migration {
+class CreateRegionsTable extends Migration
+{
 
 	/**
 	 * Run the migrations.
@@ -13,8 +14,7 @@ class CreateRegionsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('regions', function(Blueprint $table)
-		{
+		Schema::create('regions', function (Blueprint $table) {
 			$table->integer('id', true);
 			$table->string('name', 32)->nullable();
 			$table->date('date');
@@ -25,7 +25,7 @@ class CreateRegionsTable extends Migration {
 			$table->integer('recovered_total')->nullable();
 			$table->integer('deaths_new')->nullable();
 			$table->integer('deaths_total')->nullable();
-			$table->timestamps(10);
+			$table->timestamps();
 		});
 	}
 
@@ -39,5 +39,4 @@ class CreateRegionsTable extends Migration {
 	{
 		Schema::drop('regions');
 	}
-
 }

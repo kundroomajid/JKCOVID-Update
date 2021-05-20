@@ -23,8 +23,8 @@ class HomeController extends Controller
 
         if ($all_stats) {
             $last_updated = $all_stats['last_updated'];
-            $last_updated = Carbon::createFromTimeString($last_updated, $tz = 'Asia/Calcutta')->format('l jS \of F Y h:i:s A') ?? "NA";
-            $all_stats['last_updated'] = $last_updated;
+            $last_updated = Carbon::createFromTimeString($last_updated, 'UTC')->setTimezone('Asia/Calcutta');
+            $all_stats['last_updated'] = $last_updated->format('l jS \of F Y h:i:s A');
             return $all_stats;
         } else {
             return null;
