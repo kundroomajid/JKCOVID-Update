@@ -5,7 +5,7 @@ JKCOVID Update is a Laravel based project which aims to provide a consolidated v
 
 This project provides simple REST API's for getting COVID related data besides a minimalistic frontend to display and visualize that data. 
 
-This Can be accessed at [JKCOVIDUPDATES](https://jkcovidupdates.herokuapp.com/)
+This Can be accessed at [jkcovidupdates.herokuapp.com](https://jkcovidupdates.herokuapp.com/)
 
 ### Data Source
 The data source for our API's is  [@diprjk](https://twitter.com/diprjk)  which is the Official Twitter handle of Department of Information and Public Relations, Govt of Jammu & Kashmir. For automatic data updation an another plugin based on Apache-Airflow which can be found [here](https://github.com/kundroomajid/twitter_plugin) is used.
